@@ -1,12 +1,8 @@
 #![cfg(target_os = "android")]
 
-use crate::api::egl::{
-    Context as EglContext, NativeDisplay, SurfaceType as EglSurfaceType,
-};
+use crate::api::egl::{Context as EglContext, NativeDisplay, SurfaceType as EglSurfaceType};
 use crate::CreationError::{self, OsError};
-use crate::{
-    Api, ContextError, GlAttributes, PixelFormat, PixelFormatRequirements, Rect,
-};
+use crate::{Api, ContextError, GlAttributes, PixelFormat, PixelFormatRequirements, Rect};
 
 //use crate::platform::android::EventLoopExtAndroid;
 use glutin_egl_sys as ffi;
@@ -125,10 +121,7 @@ impl Context {
             |c, _| Ok(c[0]),
         )?;
         let egl_context = context.finish_pbuffer(size)?;
-        let ctx = Arc::new(AndroidContext {
-            egl_context,
-            stopped: None,
-        });
+        let ctx = Arc::new(AndroidContext { egl_context, stopped: None });
         Ok(Context(ctx))
     }
 
@@ -181,10 +174,7 @@ impl Context {
     }
 
     #[inline]
-    pub fn swap_buffers_with_damage(
-        &self,
-        rects: &[Rect],
-    ) -> Result<(), ContextError> {
+    pub fn swap_buffers_with_damage(&self, rects: &[Rect]) -> Result<(), ContextError> {
         if let Some(ref stopped) = self.0.stopped {
             let stopped = stopped.lock();
             if *stopped {
